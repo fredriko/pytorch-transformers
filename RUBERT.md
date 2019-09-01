@@ -33,11 +33,17 @@ Use the following to load the converted model in pytorch-transformers:
 import torch
 from pytorch_transformers import *
 
-# The root of the directory containing the three files listed above
+sample_text = "Рад познакомиться с вами."
 my_model_dir = "/Users/fredriko/Dropbox/data/models/rubert/pytorch-rubert/"
+
 tokenizer = BertTokenizer.from_pretrained(my_model_dir)
-model = BertModel.from_pretrained(my_model_dir)
-input_ids = torch.tensor([tokenizer.encode("Let's see all hidden-states and attentions of this text")])
-all_hidden_states, all_attentions = model(input_ids)[-2:]
-print(all_hidden_states)
+model = BertModel.from_pretrained(my_model_dir, output_hidden_states=True)
+
+input_ids = torch.tensor([tokenizer.encode(sample_text, add_special_tokens=True)])
+print(f"Input ids: {input_ids}")
+with torch.no_grad():
+    last_hidden_states = model(input_ids)[0]
+    print(f"Shape of last hidden states: {last_hidden_states.shape}")
+    print(last_hidden_states)
+
 ```
